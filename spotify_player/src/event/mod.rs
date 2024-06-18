@@ -594,21 +594,12 @@ fn handle_global_command(
             });
         }
         Command::ClosePopup => match ui.popup {
-            Some(PopupState::Search {
-                ref mut query,
-                mode,
-            }) => {
-                //
-                match mode {
-                    Some(PopupMode::Insert) => {
-                        ui.popup = Some(PopupState::Search {
-                            query: query.clone(),
-                            mode: Some(PopupMode::Normal),
-                        })
-                    }
-                    _ => ui.popup = None,
+            Some(PopupState::Search { mode, .. }) => match mode {
+                Some(PopupMode::Insert) => {
+                    return PopupMode::set(ui, PopupMode::Normal);
                 }
-            }
+                _ => ui.popup = None,
+            },
             _ => ui.popup = None,
         },
         _ => return Ok(false),

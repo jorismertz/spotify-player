@@ -290,14 +290,25 @@ fn handle_key_sequence_for_search_popup(
     if key_sequence.keys.len() == 1 {
         if let Key::None(c) = key_sequence.keys[0] {
             match c {
+                crossterm::event::KeyCode::Tab => match mode {
+                    Some(PopupMode::Normal) => {
+                        return PopupMode::set(ui, PopupMode::Insert);
+                    }
+                    Some(PopupMode::Insert) => {
+                        return PopupMode::set(ui, PopupMode::Normal);
+                    }
+                    None => {}
+                },
+                crossterm::event::KeyCode::Enter => match mode {
+                    Some(PopupMode::Insert) => {
+                        return PopupMode::set(ui, PopupMode::Normal);
+                    }
+                    _ => {}
+                },
                 crossterm::event::KeyCode::Char(c) => match mode {
                     Some(PopupMode::Normal) => match c {
                         'i' | 'o' | 'a' | 'I' | 'O' | 'A' => {
-                            ui.popup = Some(PopupState::Search {
-                                query: query.clone(),
-                                mode: Some(PopupMode::Insert),
-                            });
-                            return Ok(true);
+                            return PopupMode::set(ui, PopupMode::Insert);
                         }
                         _ => {}
                     },

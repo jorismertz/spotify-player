@@ -1,4 +1,8 @@
-use crate::{command, state::model::*, ui::single_line_input::LineInput};
+use crate::{
+    command,
+    state::{model::*, UIState},
+    ui::single_line_input::LineInput,
+};
 use tui::widgets::ListState;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -11,6 +15,19 @@ pub enum PlaylistCreateCurrentField {
 pub enum PopupMode {
     Normal,
     Insert,
+}
+
+impl PopupMode {
+    pub fn set(ui: &mut UIState, mode: PopupMode) -> anyhow::Result<bool> {
+        if let Some(PopupState::Search {
+            mode: ref mut mode_ref,
+            ..
+        }) = ui.popup
+        {
+            *mode_ref = Some(mode);
+        }
+        Ok(true)
+    }
 }
 
 impl std::fmt::Display for PopupMode {

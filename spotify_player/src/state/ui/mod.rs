@@ -48,14 +48,12 @@ impl UIState {
 
     pub fn new_search_popup(&mut self) {
         self.current_page_mut().select(0);
-        let config = config::get_config();
-        let mode = match config.app_config.vim_mode {
-            true => Some(PopupMode::Insert),
-            false => None,
-        };
         self.popup = Some(PopupState::Search {
-            query: "".to_owned(),
-            mode,
+            query: String::new(),
+            mode: match config::get_config().app_config.vim_mode {
+                true => Some(PopupMode::Insert),
+                false => None,
+            },
         });
     }
 
