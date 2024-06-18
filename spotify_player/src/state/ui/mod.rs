@@ -88,7 +88,7 @@ impl UIState {
     /// Get a list of items possibly filtered by a search query if exists a search popup
     pub fn search_filtered_items<'a, T: std::fmt::Display>(&self, items: &'a [T]) -> Vec<&'a T> {
         match self.popup {
-            Some(PopupState::Search { ref query, mode }) => {
+            Some(PopupState::Search { ref query, .. }) => {
                 let query = query.to_lowercase();
 
                 #[cfg(feature = "fzf")]
