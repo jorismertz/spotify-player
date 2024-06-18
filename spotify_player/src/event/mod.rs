@@ -594,12 +594,10 @@ fn handle_global_command(
             });
         }
         Command::ClosePopup => match ui.popup {
-            Some(PopupState::Search { mode, .. }) => match mode {
-                Some(PopupMode::Insert) => {
-                    return PopupMode::set(ui, PopupMode::Normal);
-                }
-                _ => ui.popup = None,
-            },
+            Some(PopupState::Search {
+                mode: Some(PopupMode::Insert),
+                ..
+            }) => return PopupMode::set(ui, PopupMode::Normal),
             _ => ui.popup = None,
         },
         _ => return Ok(false),

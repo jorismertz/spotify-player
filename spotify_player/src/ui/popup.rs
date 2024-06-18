@@ -69,7 +69,7 @@ pub fn render_popup(
                         frame.render_widget(Paragraph::new(format!("/{query}")), rect)
                     }
                     Some(PopupMode::Normal) => {
-                        frame.render_widget(Paragraph::new(format!("{query}")), rect)
+                        frame.render_widget(Paragraph::new(query.to_string()), rect)
                     }
                 }
                 (chunks[0], true)
