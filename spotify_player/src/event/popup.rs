@@ -287,46 +287,38 @@ fn handle_key_sequence_for_search_popup(
         _ => return Ok(false),
     };
 
+    let command = config::get_config()
+        .keymap_config
+        .find_command_from_key_sequence(key_sequence);
+
+    match command {
+        Some(Command::ChooseSelected) => {
+            if let Some(PopupMode::Insert) = mode {
+                return PopupMode::set(ui, PopupMode::Normal);
+            }
+        }
+        Some(Command::FocusNextWindow) | Some(Command::FocusPreviousWindow) => {
+            return PopupMode::toggle(ui);
+        }
+        _ => {}
+    }
+
     if key_sequence.keys.len() == 1 {
         if let Key::None(c) = key_sequence.keys[0] {
             match c {
-                crossterm::event::KeyCode::Tab => match mode {
-                    Some(PopupMode::Normal) => {
-                        return PopupMode::set(ui, PopupMode::Insert);
-                    }
-                    Some(PopupMode::Insert) => {
-                        return PopupMode::set(ui, PopupMode::Normal);
-                    }
-                    None => {}
-                },
-                crossterm::event::KeyCode::Enter => match mode {
-                    Some(PopupMode::Insert) => {
-                        return PopupMode::set(ui, PopupMode::Normal);
-                    }
-                    _ => {}
-                },
-                crossterm::event::KeyCode::Char(c) => match mode {
-                    Some(PopupMode::Normal) => match c {
-                        'i' | 'o' | 'a' | 'I' | 'O' | 'A' => {
-                            return PopupMode::set(ui, PopupMode::Insert);
-                        }
-                        _ => {}
-                    },
-                    _ => {
+                crossterm::event::KeyCode::Char(c) => {
+                    if let Some(PopupMode::Insert) = mode {
                         query.push(c);
                         ui.current_page_mut().select(0);
                         return Ok(true);
                     }
-                },
+                }
                 crossterm::event::KeyCode::Backspace => {
                     if !query.is_empty() {
                         query.pop().unwrap();
                         ui.current_page_mut().select(0);
                     }
                     return Ok(true);
-                }
-                crossterm::event::KeyCode::Esc => {
-                    tracing::debug!("closing search popup");
                 }
                 _ => {}
             }

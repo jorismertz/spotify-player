@@ -28,6 +28,21 @@ impl PopupMode {
         }
         Ok(true)
     }
+
+    pub fn toggle(ui: &mut UIState) -> anyhow::Result<bool> {
+        if let Some(PopupState::Search {
+            mode: ref mut mode_ref,
+            ..
+        }) = ui.popup
+        {
+            *mode_ref = match mode_ref {
+                Some(PopupMode::Normal) => Some(PopupMode::Insert),
+                Some(PopupMode::Insert) => Some(PopupMode::Normal),
+                None => None,
+            };
+        }
+        Ok(true)
+    }
 }
 
 impl std::fmt::Display for PopupMode {
