@@ -291,29 +291,27 @@ fn handle_key_sequence_for_search_popup(
         .keymap_config
         .find_command_from_key_sequence(key_sequence);
 
-    match command {
-        Some(Command::ChooseSelected) => {
-            if let Some(PopupMode::Insert) = mode {
-                return PopupMode::set(ui, PopupMode::Normal);
-            }
-        }
-        Some(Command::FocusNextWindow) | Some(Command::FocusPreviousWindow) => {
-            return PopupMode::toggle(ui);
-        }
-        _ => {}
-    }
-
     if key_sequence.keys.len() == 1 {
         if let Key::None(c) = key_sequence.keys[0] {
             match c {
                 crossterm::event::KeyCode::Char(c) => match mode {
+                    Some(PopupMode::Normal) => match c {
+                        'i' => {
+                            return PopupMode::set(ui, PopupMode::Insert);
+                        }
+                        _ => {}
+                    },
                     Some(PopupMode::Insert) | None => {
                         query.push(c);
                         ui.current_page_mut().select(0);
                         return Ok(true);
                     }
-                    _ => {}
                 },
+                // we can't use the default keymap for switching tabs since they could be mapped to
+                // something like h & l which would break the search input when typing these
+                crossterm::event::KeyCode::Tab | crossterm::event::KeyCode::BackTab => {
+                    return PopupMode::toggle(ui);
+                }
                 crossterm::event::KeyCode::Backspace => {
                     if !query.is_empty() {
                         query.pop().unwrap();
@@ -324,6 +322,21 @@ fn handle_key_sequence_for_search_popup(
                 _ => {}
             }
         }
+    }
+
+    match command {
+        Some(Command::ChooseSelected) => {
+            if let Some(PopupMode::Insert) = mode {
+                return PopupMode::set(ui, PopupMode::Normal);
+            }
+        }
+        // this will break a lot of navigation elements
+        // Some(Command::FocusNextWindow) | Some(Command::FocusPreviousWindow) => {
+        //     if let Some(_) = mode {
+        //         return PopupMode::toggle(ui);
+        //     }
+        // }
+        _ => {}
     }
 
     // key sequence not handle by the popup should be moved to the current page's event handler
