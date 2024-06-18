@@ -7,10 +7,26 @@ pub enum PlaylistCreateCurrentField {
     Desc,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PopupMode {
+    Normal,
+    Insert,
+}
+
+impl std::fmt::Display for PopupMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Normal => write!(f, "Normal"),
+            Self::Insert => write!(f, "Insert"),
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum PopupState {
     Search {
         query: String,
+        mode: PopupMode,
     },
     UserPlaylistList(PlaylistPopupAction, ListState),
     UserFollowedArtistList(ListState),

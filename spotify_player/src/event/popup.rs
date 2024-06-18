@@ -279,24 +279,43 @@ fn handle_key_sequence_for_search_popup(
     ui: &mut UIStateGuard,
 ) -> Result<bool> {
     // handle user's input that updates the search query
-    let query = match ui.popup {
-        Some(PopupState::Search { ref mut query }) => query,
+    let (query, mode) = match ui.popup {
+        Some(PopupState::Search {
+            ref mut query,
+            mode,
+        }) => (query, mode),
         _ => return Ok(false),
     };
+
     if key_sequence.keys.len() == 1 {
         if let Key::None(c) = key_sequence.keys[0] {
             match c {
-                crossterm::event::KeyCode::Char(c) => {
-                    query.push(c);
-                    ui.current_page_mut().select(0);
-                    return Ok(true);
-                }
+                crossterm::event::KeyCode::Char(c) => match mode {
+                    PopupMode::Insert => {
+                        query.push(c);
+                        ui.current_page_mut().select(0);
+                        return Ok(true);
+                    }
+                    PopupMode::Normal => match c {
+                        'i' | 'o' | 'a' | 'I' | 'O' | 'A' => {
+                            ui.popup = Some(PopupState::Search {
+                                query: query.clone(),
+                                mode: PopupMode::Insert,
+                            });
+                            return Ok(true);
+                        }
+                        _ => {}
+                    },
+                },
                 crossterm::event::KeyCode::Backspace => {
                     if !query.is_empty() {
                         query.pop().unwrap();
                         ui.current_page_mut().select(0);
                     }
                     return Ok(true);
+                }
+                crossterm::event::KeyCode::Esc => {
+                    tracing::debug!("closing search popup");
                 }
                 _ => {}
             }
