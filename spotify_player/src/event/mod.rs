@@ -597,15 +597,18 @@ fn handle_global_command(
             Some(PopupState::Search {
                 ref mut query,
                 mode,
-            }) => match mode {
-                PopupMode::Normal => ui.popup = None,
-                PopupMode::Insert => {
-                    ui.popup = Some(PopupState::Search {
-                        query: query.clone(),
-                        mode: PopupMode::Normal,
-                    })
+            }) => {
+                //
+                match mode {
+                    Some(PopupMode::Insert) => {
+                        ui.popup = Some(PopupState::Search {
+                            query: query.clone(),
+                            mode: Some(PopupMode::Normal),
+                        })
+                    }
+                    _ => ui.popup = None,
                 }
-            },
+            }
             _ => ui.popup = None,
         },
         _ => return Ok(false),

@@ -26,7 +26,7 @@ impl std::fmt::Display for PopupMode {
 pub enum PopupState {
     Search {
         query: String,
-        mode: PopupMode,
+        mode: Option<PopupMode>,
     },
     UserPlaylistList(PlaylistPopupAction, ListState),
     UserFollowedArtistList(ListState),

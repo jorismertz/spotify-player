@@ -291,21 +291,21 @@ fn handle_key_sequence_for_search_popup(
         if let Key::None(c) = key_sequence.keys[0] {
             match c {
                 crossterm::event::KeyCode::Char(c) => match mode {
-                    PopupMode::Insert => {
-                        query.push(c);
-                        ui.current_page_mut().select(0);
-                        return Ok(true);
-                    }
-                    PopupMode::Normal => match c {
+                    Some(PopupMode::Normal) => match c {
                         'i' | 'o' | 'a' | 'I' | 'O' | 'A' => {
                             ui.popup = Some(PopupState::Search {
                                 query: query.clone(),
-                                mode: PopupMode::Insert,
+                                mode: Some(PopupMode::Insert),
                             });
                             return Ok(true);
                         }
                         _ => {}
                     },
+                    _ => {
+                        query.push(c);
+                        ui.current_page_mut().select(0);
+                        return Ok(true);
+                    }
                 },
                 crossterm::event::KeyCode::Backspace => {
                     if !query.is_empty() {

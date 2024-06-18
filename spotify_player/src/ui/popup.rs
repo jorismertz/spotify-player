@@ -64,7 +64,12 @@ pub fn render_popup(
                     construct_and_render_block("Search", &ui.theme, Borders::ALL, frame, chunks[1]);
 
                 // make up some better solution for showing current mode later
-                frame.render_widget(Paragraph::new(format!("{mode}: /{query}")), rect);
+                match mode {
+                    Some(value) => {
+                        frame.render_widget(Paragraph::new(format!("{value}: /{query}")), rect)
+                    }
+                    None => frame.render_widget(Paragraph::new(format!("/{query}")), rect),
+                }
                 (chunks[0], true)
             }
             PopupState::ActionList(item, _) => {
