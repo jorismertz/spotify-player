@@ -306,13 +306,14 @@ fn handle_key_sequence_for_search_popup(
     if key_sequence.keys.len() == 1 {
         if let Key::None(c) = key_sequence.keys[0] {
             match c {
-                crossterm::event::KeyCode::Char(c) => {
-                    if let Some(PopupMode::Insert) = mode {
+                crossterm::event::KeyCode::Char(c) => match mode {
+                    Some(PopupMode::Insert) | None => {
                         query.push(c);
                         ui.current_page_mut().select(0);
                         return Ok(true);
                     }
-                }
+                    _ => {}
+                },
                 crossterm::event::KeyCode::Backspace => {
                     if !query.is_empty() {
                         query.pop().unwrap();
