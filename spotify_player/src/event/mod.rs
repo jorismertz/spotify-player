@@ -473,6 +473,10 @@ fn handle_global_command(
                 line_input: LineInput::default(),
                 current_query: String::new(),
                 state: SearchPageUIState::new(),
+                mode: match config::get_config().app_config.modal_search {
+                    true => Some(InputMode::Insert),
+                    false => None,
+                },
             });
         }
         Command::BrowsePage => {
