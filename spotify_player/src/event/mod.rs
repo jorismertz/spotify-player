@@ -594,11 +594,22 @@ fn handle_global_command(
             });
         }
         Command::ClosePopup => match ui.popup {
-            Some(PopupState::Search {
-                mode: Some(InputMode::Insert),
-                ..
-            }) => return InputMode::set(ui, InputMode::Normal),
-            _ => ui.popup = None,
+            Some(PopupState::Search { mode, .. }) => match mode {
+                Some(InputMode::Insert) => {
+                    return InputMode::set(ui, InputMode::Normal);
+                }
+                _ => ui.popup = None,
+            },
+            _ => {
+                if config::get_config().app_config.modal_search
+                    && ui.popup.is_none()
+                    && ui.history.len() > 1
+                {
+                    ui.history.pop();
+                }
+
+                ui.popup = None
+            }
         },
         _ => return Ok(false),
     }

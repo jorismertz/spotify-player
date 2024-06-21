@@ -111,7 +111,7 @@ pub struct AppConfig {
 
     pub seek_duration_secs: u16,
 
-    pub vim_mode: bool,
+    pub modal_search: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -288,7 +288,7 @@ impl Default for AppConfig {
 
             seek_duration_secs: 5,
 
-            vim_mode: false,
+            modal_search: false,
         }
     }
 }
