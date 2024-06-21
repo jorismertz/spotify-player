@@ -18,7 +18,7 @@ pub enum InputMode {
 }
 
 impl InputMode {
-    pub fn set(ui: &mut UIState, mode: InputMode) -> anyhow::Result<bool> {
+    pub fn set_popup_search_mode(ui: &mut UIState, mode: InputMode) -> anyhow::Result<bool> {
         if let Some(PopupState::Search {
             mode: ref mut mode_ref,
             ..
@@ -29,7 +29,7 @@ impl InputMode {
         Ok(true)
     }
 
-    pub fn toggle(ui: &mut UIState) -> anyhow::Result<bool> {
+    pub fn toggle_popup_search_mode(ui: &mut UIState) -> anyhow::Result<bool> {
         if let Some(PopupState::Search {
             mode: ref mut mode_ref,
             ..

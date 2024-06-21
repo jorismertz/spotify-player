@@ -50,7 +50,7 @@ impl UIState {
         self.current_page_mut().select(0);
         self.popup = Some(PopupState::Search {
             query: String::new(),
-            mode: match config::get_config().app_config.vim_mode {
+            mode: match config::get_config().app_config.modal_search {
                 true => Some(InputMode::Insert),
                 false => None,
             },

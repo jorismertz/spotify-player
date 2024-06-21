@@ -293,7 +293,7 @@ fn handle_key_sequence_for_search_popup(
                 crossterm::event::KeyCode::Char(c) => match mode {
                     Some(InputMode::Normal) => {
                         if c == 'i' {
-                            return InputMode::set(ui, InputMode::Insert);
+                            return InputMode::set_popup_search_mode(ui, InputMode::Insert);
                         }
                     }
                     Some(InputMode::Insert) | None => {
@@ -304,11 +304,11 @@ fn handle_key_sequence_for_search_popup(
                 },
                 crossterm::event::KeyCode::Enter => {
                     if let Some(InputMode::Insert) = mode {
-                        _ = InputMode::set(ui, InputMode::Normal);
+                        _ = InputMode::set_popup_search_mode(ui, InputMode::Normal);
                     }
                 }
                 crossterm::event::KeyCode::Tab | crossterm::event::KeyCode::BackTab => {
-                    return InputMode::toggle(ui);
+                    return InputMode::toggle_popup_search_mode(ui);
                 }
                 crossterm::event::KeyCode::Backspace => {
                     if !query.is_empty() {
