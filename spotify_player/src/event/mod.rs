@@ -597,9 +597,24 @@ fn handle_global_command(
                 current_field: PlaylistCreateCurrentField::Name,
             });
         }
-        Command::ClosePopup => {
-            ui.popup = None;
-        }
+        Command::ClosePopup => match ui.popup {
+            Some(PopupState::Search { mode, .. }) => match mode {
+                Some(InputMode::Insert) => {
+                    return InputMode::set_popup_search_mode(ui, InputMode::Normal);
+                }
+                _ => ui.popup = None,
+            },
+            _ => {
+                if config::get_config().app_config.modal_search
+                    && ui.popup.is_none()
+                    && ui.history.len() > 1
+                {
+                    ui.history.pop();
+                }
+
+                ui.popup = None
+            }
+        },
         _ => return Ok(false),
     }
     Ok(true)
