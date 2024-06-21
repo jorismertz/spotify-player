@@ -65,10 +65,10 @@ pub fn render_popup(
 
                 // make up some better solution for showing current mode later
                 match mode {
-                    Some(PopupMode::Insert) | None => {
+                    Some(InputMode::Insert) | None => {
                         frame.render_widget(Paragraph::new(format!("/{query}")), rect)
                     }
-                    Some(PopupMode::Normal) => {
+                    Some(InputMode::Normal) => {
                         frame.render_widget(Paragraph::new(query.to_string()), rect)
                     }
                 }

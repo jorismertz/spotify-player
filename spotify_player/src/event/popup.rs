@@ -291,24 +291,24 @@ fn handle_key_sequence_for_search_popup(
         if let Key::None(c) = key_sequence.keys[0] {
             match c {
                 crossterm::event::KeyCode::Char(c) => match mode {
-                    Some(PopupMode::Normal) => {
+                    Some(InputMode::Normal) => {
                         if c == 'i' {
-                            return PopupMode::set(ui, PopupMode::Insert);
+                            return InputMode::set(ui, InputMode::Insert);
                         }
                     }
-                    Some(PopupMode::Insert) | None => {
+                    Some(InputMode::Insert) | None => {
                         query.push(c);
                         ui.current_page_mut().select(0);
                         return Ok(true);
                     }
                 },
                 crossterm::event::KeyCode::Enter => {
-                    if let Some(PopupMode::Insert) = mode {
-                        _ = PopupMode::set(ui, PopupMode::Normal);
+                    if let Some(InputMode::Insert) = mode {
+                        _ = InputMode::set(ui, InputMode::Normal);
                     }
                 }
                 crossterm::event::KeyCode::Tab | crossterm::event::KeyCode::BackTab => {
-                    return PopupMode::toggle(ui);
+                    return InputMode::toggle(ui);
                 }
                 crossterm::event::KeyCode::Backspace => {
                     if !query.is_empty() {

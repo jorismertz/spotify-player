@@ -12,13 +12,13 @@ pub enum PlaylistCreateCurrentField {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PopupMode {
+pub enum InputMode {
     Normal,
     Insert,
 }
 
-impl PopupMode {
-    pub fn set(ui: &mut UIState, mode: PopupMode) -> anyhow::Result<bool> {
+impl InputMode {
+    pub fn set(ui: &mut UIState, mode: InputMode) -> anyhow::Result<bool> {
         if let Some(PopupState::Search {
             mode: ref mut mode_ref,
             ..
@@ -36,8 +36,8 @@ impl PopupMode {
         }) = ui.popup
         {
             *mode_ref = match mode_ref {
-                Some(PopupMode::Normal) => Some(PopupMode::Insert),
-                Some(PopupMode::Insert) => Some(PopupMode::Normal),
+                Some(InputMode::Normal) => Some(InputMode::Insert),
+                Some(InputMode::Insert) => Some(InputMode::Normal),
                 None => None,
             };
         }
@@ -45,7 +45,7 @@ impl PopupMode {
     }
 }
 
-impl std::fmt::Display for PopupMode {
+impl std::fmt::Display for InputMode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Normal => write!(f, "Normal"),
@@ -58,7 +58,7 @@ impl std::fmt::Display for PopupMode {
 pub enum PopupState {
     Search {
         query: String,
-        mode: Option<PopupMode>,
+        mode: Option<InputMode>,
     },
     UserPlaylistList(PlaylistPopupAction, ListState),
     UserFollowedArtistList(ListState),

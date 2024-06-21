@@ -51,7 +51,7 @@ impl UIState {
         self.popup = Some(PopupState::Search {
             query: String::new(),
             mode: match config::get_config().app_config.vim_mode {
-                true => Some(PopupMode::Insert),
+                true => Some(InputMode::Insert),
                 false => None,
             },
         });

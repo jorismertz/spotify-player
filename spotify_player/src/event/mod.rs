@@ -595,9 +595,9 @@ fn handle_global_command(
         }
         Command::ClosePopup => match ui.popup {
             Some(PopupState::Search {
-                mode: Some(PopupMode::Insert),
+                mode: Some(InputMode::Insert),
                 ..
-            }) => return PopupMode::set(ui, PopupMode::Normal),
+            }) => return InputMode::set(ui, InputMode::Normal),
             _ => ui.popup = None,
         },
         _ => return Ok(false),
